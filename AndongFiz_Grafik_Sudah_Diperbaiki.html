@@ -1,0 +1,1097 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AndongFiz — Laboratorium Virtual GLB & GLBB</title>
+<style>
+:root{
+  --navy:#173d60;--blue:#2d78ad;--gold:#f1b93d;--cream:#fff8e8;
+  --bg:#f4f7fa;--text:#19344b;--green:#32966f;--red:#c95d5d;--line:#d7e1e8;
+  --soft:#eef5fa;--purple:#7665a8;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;font-family:Arial,Helvetica,sans-serif;background:var(--bg);color:var(--text);line-height:1.55}
+header{background:linear-gradient(125deg,var(--navy),var(--blue));color:#fff;padding:30px 6% 34px}
+.hero{max-width:1180px;margin:auto;display:grid;grid-template-columns:1.2fr .8fr;gap:28px;align-items:center}
+.hero h1{font-size:clamp(30px,5vw,52px);margin:8px 0}
+.hero p{max-width:720px;margin:0 0 16px}
+.hero-img{background:#ffffff22;padding:8px;border-radius:18px;border:1px solid #ffffff35}
+.hero-img img{width:100%;height:230px;object-fit:cover;border-radius:12px;display:block}
+.hero-img small{display:block;margin:7px 3px 0;opacity:.9}
+.badges{display:flex;gap:7px;flex-wrap:wrap}
+.badge{display:inline-block;background:#ffffff20;border:1px solid #ffffff45;border-radius:999px;padding:5px 10px;font-size:12px;font-weight:bold}
+nav{position:sticky;top:0;z-index:50;background:#fff;display:flex;gap:6px;flex-wrap:wrap;justify-content:center;padding:10px;box-shadow:0 2px 10px #18324b14}
+nav button{border:0;background:#edf3f8;color:var(--text);border-radius:9px;padding:10px 13px;cursor:pointer;font-weight:bold}
+nav button.active,nav button:hover{background:var(--gold);color:var(--navy)}
+main{max-width:1180px;margin:22px auto;padding:0 16px}
+.page{display:none}.page.active{display:block}
+.card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:20px;margin-bottom:17px;box-shadow:0 3px 12px #18324b0b}
+.card h2{color:var(--navy);margin-top:0}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:15px}
+.context{background:var(--cream);border-left:6px solid var(--gold);padding:16px;border-radius:11px}
+.info{background:var(--soft);border:1px solid #d6e6f1;padding:14px;border-radius:11px}
+.role{border-left:5px solid var(--blue);background:#f8fbfd;padding:13px;border-radius:10px}
+.step{display:flex;gap:12px;align-items:flex-start}
+.step-no{min-width:34px;height:34px;border-radius:50%;background:var(--gold);display:grid;place-items:center;font-weight:bold;color:var(--navy)}
+label{display:block;font-weight:bold;margin:11px 0 5px}
+input,select,textarea{width:100%;padding:10px 11px;border:1px solid #c8d6df;border-radius:8px;font:inherit;background:#fff}
+textarea{min-height:90px;resize:vertical}
+button.btn{border:0;border-radius:9px;padding:10px 15px;background:var(--blue);color:#fff;font-weight:bold;cursor:pointer;margin:5px 4px 5px 0}
+button.btn:hover{background:var(--gold);color:var(--navy)}
+button.secondary{background:#eaf1f6;color:var(--text)}
+button.danger{background:#b95151}
+button.green{background:var(--green)}
+.small{font-size:13px;color:#687987}
+.warning{background:#fff2e8;border:1px solid #edc99f;padding:13px;border-radius:10px}
+.success{background:#edf8f1;border:1px solid #b8ddc5;padding:13px;border-radius:10px}
+.tag{display:inline-block;background:#e7f2ff;color:#1766a2;border-radius:999px;padding:4px 10px;font-size:12px;font-weight:bold}
+table{width:100%;border-collapse:collapse;margin:12px 0}
+th,td{border:1px solid var(--line);padding:8px;text-align:center}
+th{background:#eaf2f8}
+.data-input{min-width:95px;text-align:center}
+canvas{width:100%;height:300px;border:1px solid var(--line);border-radius:12px;background:#fff}
+.progress-wrap{height:11px;background:#dce6ed;border-radius:99px;overflow:hidden}
+.progress-bar{height:100%;width:0;background:var(--green);transition:.3s}
+.kpi{font-size:24px;font-weight:bold;color:var(--navy)}
+.simulator{background:#f7fafc;border:1px solid var(--line);border-radius:15px;padding:15px}
+.track{position:relative;height:170px;border:2px solid #b8c8d2;border-radius:12px;background:linear-gradient(#fff,#f7fafc);overflow:hidden}
+.road{position:absolute;left:30px;right:30px;top:87px;border-top:7px solid #7c8b94}
+.marker{position:absolute;top:58px;width:2px;height:58px;background:#7c8b94}
+.marker span{position:absolute;top:-27px;left:-12px;font-size:11px;font-weight:bold}
+.marker small{position:absolute;top:61px;left:-15px;white-space:nowrap;font-size:10px;color:#657784}
+.cart{position:absolute;top:61px;left:30px;font-size:34px;transform:translateX(-50%);transition:none}
+.sim-readout{font-family:monospace;background:#142530;color:#bff0d5;padding:10px;border-radius:8px;margin-top:10px}
+.controls{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px}
+.notice{padding:11px;border-radius:9px;background:#f5f0ff;border:1px solid #ddd3f2}
+.hidden{display:none!important}
+.answer{background:#f8fbfd;border:1px dashed #cbd9e2;padding:10px;border-radius:9px}
+.checkline{display:flex;align-items:center;gap:8px;font-weight:normal;margin:7px 0}
+.checkline input{width:auto}
+.score{font-size:22px;font-weight:bold}
+footer{padding:28px 16px;text-align:center;color:#6d7d88;font-size:13px}
+.teacher-box{border:2px dashed var(--purple);background:#faf8ff}
+.status-dot{display:inline-block;width:9px;height:9px;border-radius:50%;background:#b8c4ca;margin-right:6px}
+.status-dot.on{background:var(--green)}
+@media(max-width:760px){
+  .hero{grid-template-columns:1fr}.hero-img img{height:205px}
+  nav{justify-content:flex-start;overflow-x:auto;flex-wrap:nowrap}
+  nav button{white-space:nowrap}
+  .card{padding:16px}
+}
+
+.glbb-tabs{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0 16px}
+.glbb-tab{border:1px solid var(--line);background:#f3f7fa;color:var(--text);padding:11px 14px;border-radius:10px;font-weight:bold;cursor:pointer}
+.glbb-tab.active{background:var(--gold);color:var(--navy);border-color:#e3ae2f}
+.glbb-panel{display:none}.glbb-panel.active{display:block}
+.ticker-card{background:#fffdf6;border:1px solid #ead9a9;border-radius:14px;padding:15px}
+.ticker-strip{position:relative;height:92px;background:#f7f1df;border:1px dashed #c7b98f;border-radius:10px;overflow:hidden;margin-top:10px}
+.ticker-strip .strip-line{position:absolute;left:18px;right:18px;top:44px;border-top:3px solid #8d8061}
+.ticker-dot{position:absolute;top:35px;width:12px;height:12px;border-radius:50%;background:#173d60}
+.ticker-label{font-size:12px;color:#6d6757}
+.andong-stage{position:relative;height:175px;border:2px solid #b8c8d2;border-radius:12px;background:linear-gradient(#eaf6ff 0 54%,#e9e1c9 55% 100%);overflow:hidden}
+.andong-stage:after{content:"";position:absolute;left:0;right:0;bottom:34px;border-top:7px solid #707b80}
+.tree{position:absolute;bottom:38px;font-size:30px;opacity:.85}
+.andong-runner{position:absolute;left:6%;bottom:42px;width:88px;height:54px;z-index:3;transition:none}
+.andong-runner .horse{position:absolute;left:0;bottom:18px;font-size:30px}
+.andong-runner .carriage{position:absolute;left:25px;bottom:9px;width:52px;height:28px;border-radius:7px 12px 5px 5px;background:#7a3f2b;border:2px solid #4e2b20}
+.andong-runner .roof{position:absolute;left:29px;bottom:35px;width:43px;height:13px;background:#b66d3c;border-radius:22px 22px 5px 5px;border:2px solid #4e2b20}
+.andong-runner .wheel{position:absolute;bottom:0;width:15px;height:15px;border-radius:50%;background:#2e2e2e;border:3px solid #d7b26a}
+.andong-runner .w1{left:31px}.andong-runner .w2{left:62px}
+.graph-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:15px}
+.teacher-note{background:#fff8e8;border:1px solid #ead39b;border-radius:10px;padding:12px}
+
+</style>
+</head>
+<body>
+
+<header>
+  <div class="hero">
+    <div>
+      <div class="badges">
+        <span class="badge">CRT • Andong Yogyakarta</span>
+        <span class="badge">Cooperative Learning</span>
+        <span class="badge">Pemahaman Konsep</span>
+        <span class="badge">Kolaborasi</span>
+      </div>
+      <h1>🐎 AndongFiz</h1>
+      <p>Laboratorium virtual untuk menemukan konsep <b>GLB dan GLBB</b> melalui konteks Andong Yogyakarta. Kamu tidak hanya membaca hasil <b>kamu yang mengatur percobaan, mengukur, mengisi data, membuat grafik, dan menarik kesimpulan.</b></p>
+    </div>
+    <div class="hero-img">
+      <img src="imagesandong-yogyakarta.jpg" alt="Andong tradisional Yogyakarta">
+      <small>Andong Yogyakarta sebagai konteks belajar.</small>
+    </div>
+  </div>
+</header>
+
+<nav id="nav">
+  <button class="active" data-page="mulai">1. Mulai</button>
+  <button data-page="tujuan">2. Tujuan & Materi</button>
+  <button data-page="kelompok">3. Kelompok</button>
+  <button data-page="glb">4. Eksperimen GLB</button>
+  <button data-page="glbb">5. Eksperimen GLBB</button>
+  <button data-page="diskusi">6. Analisis</button>
+  <button data-page="evaluasi">7. Evaluasi</button>
+  <button data-page="refleksi">8. Refleksi</button>
+  <button data-page="guru">Penilaian Guru</button>
+</nav>
+
+<main>
+
+<section id="mulai" class="page active">
+  <div class="context">
+    <div class="step">
+      <div class="step-no">1</div>
+      <div>
+        <h2 style="margin:0">Mari mulai dari pengalamanmu</h2>
+        <p>Pernahkah kamu melihat andong di jalan Malioboro? Saat mulai berjalan, andong dapat bertambah cepat. Saat melaju stabil, kecepatannya dapat relatif tetap. <b>Apakah kudanya selalu berlari dengan kecepatan yang sama, atau kadang pelan lalu makin lama makin kencang?</b></p>
+        <p><b>Pertanyaan pemantik:</b> Kalau kita catat jarak dan waktu andong itu, pola seperti apa yang akan muncul saat andong melaju stabil, dan saat andong bertambah cepat?</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Alur kegiatanmu</h2>
+    <div class="grid">
+      <div class="info"><b>1. Mulai & pemantik</b><br>Hubungkan konsep gerak dengan pengalaman mengamati andong.</div>
+      <div class="info"><b>2. Tujuan & materi singkat</b><br>Kenali ciri GLB dan GLBB sebelum menguji.</div>
+      <div class="info"><b>3. Cooperative Learning</b><br>Bagi peran dan bekerja saling bekerjasama.</div>
+      <div class="info"><b>4. Eksperimen GLB</b><br>Atur simulasi, ukur waktu, isi tabel, baca grafik.</div>
+      <div class="info"><b>5. Eksperimen GLBB</b><br>Uji gerak dengan percepatan tetap.</div>
+      <div class="info"><b>6. Analisis kelompok</b><br>Bandingkan bukti GLB dan GLBB.</div>
+      <div class="info"><b>7. Evaluasi</b><br>Uji pemahaman konsep secara individu.</div>
+      <div class="info"><b>8. Refleksi & simpan</b><br>Refleksikan kontribusi dan simpan hasil untuk guru.</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Yang perlu kamu ingat</h2>
+    <div class="grid">
+      <div>
+        <span class="tag">Pemahaman konsep</span>
+        <p>Kamu akan menunjukkan kemampuan <b>menjelaskan, mengklasifikasikan, menerapkan, menganalisis, dan menyimpulkan</b> berdasarkan bukti data.</p>
+      </div>
+      <div>
+        <span class="tag">Kolaborasi</span>
+        <p>Kamu akan berlatih <b>berbagi peran, bertanggung jawab, berdiskusi, mendengarkan, dan mengevaluasi kerja kelompok</b>.</p>
+      </div>
+    </div>
+    <button class="btn green" onclick="go('tujuan')">Mulai belajar →</button>
+  </div>
+</section>
+
+<section id="tujuan" class="page">
+  <div class="card">
+    <div class="step">
+      <div class="step-no">2</div>
+      <div style="flex:1">
+        <h2>Tujuan & materi singkat</h2>
+        <p>Setelah kegiatan, kamu diharapkan dapat membedakan GLB dan GLBB berdasarkan hubungan posisi, waktu, kecepatan, dan percepatan serta menjelaskan hasilnya menggunakan data.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid">
+    <div class="card">
+      <span class="tag">GLB</span>
+      <h2>Gerak Lurus Beraturan</h2>
+      <p>Kecepatan tetap dan percepatan bernilai nol.</p>
+      <p><b>Persamaan:</b> s = v × t</p>
+      <p>Pada grafik <b>posisi–waktu</b>, GLB membentuk garis lurus dengan kemiringan tetap.</p>
+    </div>
+    <div class="card">
+      <span class="tag">GLBB</span>
+      <h2>Gerak Lurus Berubah Beraturan</h2>
+      <p>Percepatan tetap sehingga kecepatan berubah secara teratur.</p>
+      <p><b>Persamaan:</b> vₜ = v₀ + a × t</p>
+      <p><b>Jarak:</b> s = v₀t + ½at²</p>
+      <p>Pada grafik <b>kecepatan–waktu</b>, model idealnya membentuk garis lurus.</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>Prediksimu sebelum eksperimen</h2>
+    <label>Menurutmu, bagaimana bentuk grafik posisi–waktu pada GLB?</label>
+    <textarea id="predGLB" placeholder="Tulis prediksimu..."></textarea>
+    <label>Menurutmu, bagaimana bentuk grafik kecepatan–waktu pada GLBB yang dipercepat?</label>
+    <textarea id="predGLBB" placeholder="Tulis prediksimu..."></textarea>
+    <button class="btn" onclick="saveFieldActivity('tujuan')">Simpan prediksi</button>
+  </div>
+</section>
+
+<section id="kelompok" class="page">
+  <div class="card">
+    <div class="step">
+      <div class="step-no">3</div>
+      <div style="flex:1">
+        <h2>Cooperative Learning — Siapkan kelompok</h2>
+        <p>Percobaan dilakukan bersama, tetapi setiap anggota memiliki tanggung jawab. Pastikan bukan hanya satu orang yang mengoperasikan simulasi.</p>
+      </div>
+    </div>
+    <div class="grid">
+      <div class="role"><b>Koordinator</b><br>Mengatur urutan kerja dan memastikan semua anggota terlibat.</div>
+      <div class="role"><b>Operator</b><br>Mengatur simulasi dan menjalankan percobaan.</div>
+      <div class="role"><b>Pencatat</b><br>Mencatat hasil pengukuran ke tabel.</div>
+      <div class="role"><b>Analis</b><br>Membaca tabel dan grafik serta menghubungkan dengan konsep.</div>
+      <div class="role"><b>Penyaji</b><br>Menjelaskan hasil kelompok dengan bukti data.</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <label>Nama kelompok</label>
+    <input id="groupName" placeholder="Contoh: Kelompok 3">
+    <label>Nama anggota dan perannya</label>
+    <textarea id="members" placeholder="Contoh:
+Alya — Koordinator
+Bima — Operator
+Citra — Pencatat
+Dimas — Analis
+Eka — Penyaji"></textarea>
+    <div class="notice"><b>Kesepakatan kerja:</b> operator menjalankan simulasi, pencatat mengisi data, tetapi keputusan akhir dibuat melalui diskusi kelompok.</div>
+    <label>Bagaimana kelompokmu memastikan semua anggota berkontribusi?</label>
+    <textarea id="collabPlan"></textarea>
+    <button class="btn" onclick="saveFieldActivity('kelompok')">Simpan pembagian peran</button>
+  </div>
+</section>
+
+<section id="glb" class="page">
+  <div class="card">
+    <div class="step">
+      <div class="step-no">4</div>
+      <div style="flex:1">
+        <h2>Eksperimen 1 — GLB</h2>
+        <p><b>Misi:</b> buktikan dengan data bahwa pada model GLB, kecepatan tetap dan jarak bertambah teratur terhadap waktu.</p>
+      </div>
+    </div>
+    <div class="warning"><b>Penting:</b> tabel di bawah <b>tidak diisi otomatis</b>. Kamu yang membaca waktu dari simulasi dan memasukkan hasil pengukuran. Ini adalah bagian utama eksperimenmu.</div>
+  </div>
+
+  <div class="card">
+    <h3>A. Atur alat virtual</h3>
+    <div class="controls">
+      <div><label>Kecepatan model</label><input id="glbSpeed" type="number" value="1" min="0.2" max="3" step="0.1"><span class="small">m/s</span></div>
+      <div><label>Lintasan</label><input value="8 m" disabled></div>
+      <div><label>Gerak</label><input value="GLB (a = 0)" disabled></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>B. Jalankan simulasi & ukur</h3>
+    <div class="simulator">
+      <div class="track" id="trackGLB">
+        <div class="road"></div>
+        <div class="marker" style="left:10%"><span>S0</span><small>0 m</small></div>
+        <div class="marker" style="left:30%"><span>S1</span><small>2 m</small></div>
+        <div class="marker" style="left:50%"><span>S2</span><small>4 m</small></div>
+        <div class="marker" style="left:70%"><span>S3</span><small>6 m</small></div>
+        <div class="marker" style="left:90%"><span>S4</span><small>8 m</small></div>
+        <div class="andong-runner" id="andongGLB">
+            <div class="horse">🐎</div><div class="carriage"></div><div class="roof"></div>
+            <div class="wheel w1"></div><div class="wheel w2"></div>
+          </div>
+      </div>
+      <div class="sim-readout" id="readGLB">SIMULASI GLB | status: siap | waktu: 0.000 s | posisi: 0.00 m</div>
+      <button class="btn green" onclick="startSim('glb')">▶ Mulai</button>
+      <button class="btn secondary" onclick="pauseSim('glb')">Ⅱ Jeda</button>
+      <button class="btn secondary" onclick="resetSim('glb')">↺ Reset</button>
+      <button class="btn" onclick="recordMeasure('glb')">📍 Catat pengukuran</button>
+      <p class="small">Saat cart berada dekat posisi yang kamu inginkan, klik “Catat pengukuran”. Masukkan data yang kamu baca ke tabel. Ulangi sampai semua titik terisi.</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>C. Isi tabel hasil pengukuranmu</h3>
+    <table>
+      <thead><tr><th>Posisi s (m)</th><th>Waktu t (s) — isi sendiri</th><th>Kecepatan v (m/s) — hitung/isi</th></tr></thead>
+      <tbody id="glbRows"></tbody>
+    </table>
+    <button class="btn" onclick="calcTable('glb')">Hitung & tampilkan grafik</button>
+    <button class="btn secondary" onclick="clearTable('glb')">Kosongkan tabel</button>
+  </div>
+
+  <div class="grid">
+    <div class="card">
+      <h3>Grafik posisi–waktu</h3>
+      <canvas id="graphGLB"></canvas>
+    </div>
+    <div class="card">
+      <h3>Grafik kecepatan–waktu</h3>
+      <canvas id="graphVGLB"></canvas>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>D. Analisis GLB</h3>
+    <label>1. Apakah waktu yang dibutuhkan bertambah sebanding dengan posisi?</label>
+    <textarea id="glbA1"></textarea>
+    <label>2. Bagaimana pola nilai kecepatan yang kamu peroleh?</label>
+    <textarea id="glbA2"></textarea>
+    <label>3. Berdasarkan tabel dan grafik, apa bukti bahwa gerak tersebut termasuk GLB?</label>
+    <textarea id="glbA3"></textarea>
+    <label>4. Kesimpulan eksperimen GLB</label>
+    <textarea id="glbConclusion"></textarea>
+    <button class="btn green" onclick="saveLab('glb')">Simpan Eksperimen GLB</button>
+  </div>
+</section>
+
+<section id="glbb" class="page">
+  <div class="card">
+    <div class="step">
+      <div class="step-no">5</div>
+      <div style="flex:1">
+        <h2>Eksperimen 2 — GLBB</h2>
+        <p><b>Misi:</b> buktikan bahwa perubahan kecepatan dapat terjadi secara teratur karena percepatan tetap.</p>
+      </div>
+    </div>
+
+    <div class="glbb-tabs">
+      <button class="glbb-tab active" onclick="openGLBBTab('dipercepat',this)">🚀 GLBB Dipercepat</button>
+      <button class="glbb-tab" onclick="openGLBBTab('diperlambat',this)">🛑 GLBB Diperlambat</button>
+    </div>
+
+    <div class="notice">
+      <b>Petunjuk:</b> pilih satu jenis GLBB, atur parameter, jalankan andong, gunakan ticker timer sebagai alat bantu membaca selang waktu, lalu <b>isi tabel sendiri</b>. Grafik baru muncul setelah data pengukuranmu dimasukkan.
+    </div>
+  </div>
+
+  <div id="panelDipercepat" class="glbb-panel active">
+    <div class="card">
+      <h3>GLBB Dipercepat — kecepatan bertambah</h3>
+      <div class="warning">Pada simulasi ini <b>a &gt; 0</b>. Amati apakah andong menempuh titik berikutnya dengan kecepatan yang semakin besar.</div>
+      <div class="controls">
+        <div><label>Kecepatan awal v₀</label><input id="glbbDV0" type="number" value="0.5" min="0" max="2" step="0.1"><span class="small">m/s</span></div>
+        <div><label>Percepatan a</label><input id="glbbDA" type="number" value="0.5" min="0.1" max="1.5" step="0.1"><span class="small">m/s²</span></div>
+        <div><label>Lintasan</label><input value="8 m" disabled></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>1. Jalankan virtual lab</h3>
+      <div class="simulator">
+        <div class="andong-stage" id="stageGLBBD">
+          <span class="tree" style="left:7%">🌳</span><span class="tree" style="left:82%">🌳</span>
+          <div class="marker" style="left:10%"><span>S0</span><small>0 m</small></div>
+          <div class="marker" style="left:30%"><span>S1</span><small>2 m</small></div>
+          <div class="marker" style="left:50%"><span>S2</span><small>4 m</small></div>
+          <div class="marker" style="left:70%"><span>S3</span><small>6 m</small></div>
+          <div class="marker" style="left:90%"><span>S4</span><small>8 m</small></div>
+          <div class="andong-runner" id="andongD">
+            <div class="horse">🐎</div><div class="carriage"></div><div class="roof"></div>
+            <div class="wheel w1"></div><div class="wheel w2"></div>
+          </div>
+        </div>
+        <div class="sim-readout" id="readGLBBD">GLBB DIPERCEPAT | siap | t: 0.000 s | s: 0.00 m | v: 0.00 m/s</div>
+        <button class="btn green" onclick="startGLBB('dipercepat')">▶ Mulai</button>
+        <button class="btn secondary" onclick="pauseGLBB()">Ⅱ Jeda</button>
+        <button class="btn secondary" onclick="resetGLBB('dipercepat')">↺ Reset</button>
+        <button class="btn" onclick="recordGLBB('dipercepat')">📍 Catat pengukuran</button>
+      </div>
+    </div>
+
+    <div class="card ticker-card">
+      <h3>2. Ticker timer virtual</h3>
+      <p class="small">Ticker timer memberi tanda pada pita dalam selang waktu yang sama. Semakin renggang jarak antartitik, semakin besar kecepatan benda.</p>
+      <div class="ticker-strip" id="tickerD"><div class="strip-line"></div></div>
+      <div class="ticker-label">Contoh pembacaan: titik-titik dibuat pada interval waktu yang sama.</div>
+    </div>
+
+    <div class="card">
+      <h3>3. Isi tabel hasil pengukuranmu</h3>
+      <table>
+        <thead><tr><th>Posisi s (m)</th><th>Waktu t (s) — isi sendiri</th><th>Kecepatan v (m/s) — isi sendiri</th></tr></thead>
+        <tbody id="glbbDRows"></tbody>
+      </table>
+      <button class="btn" onclick="calcGLBBTable('dipercepat')">Tampilkan grafik</button>
+      <button class="btn secondary" onclick="clearGLBBTable('dipercepat')">Kosongkan tabel</button>
+    </div>
+
+    <div class="graph-grid">
+      <div class="card"><h3>Grafik posisi–waktu</h3><canvas id="graphGLBBD"></canvas></div>
+      <div class="card"><h3>Grafik kecepatan–waktu</h3><canvas id="graphVGLBBD"></canvas></div>
+      <div class="card"><h3>Grafik percepatan–waktu</h3><canvas id="graphAGLBBD"></canvas></div>
+    </div>
+
+    <div class="card">
+      <h3>4. Analisis GLBB dipercepat</h3>
+      <label>1. Bagaimana perubahan kecepatan dari S1 ke S4?</label><textarea id="glbbDA1"></textarea>
+      <label>2. Apa yang kamu lihat dari jarak titik pada ticker timer?</label><textarea id="glbbDA2"></textarea>
+      <label>3. Bagaimana bentuk grafik kecepatan–waktu dan apa maknanya?</label><textarea id="glbbDA3"></textarea>
+      <label>4. Kesimpulan eksperimen GLBB dipercepat</label><textarea id="glbbDConclusion"></textarea>
+      <button class="btn green" onclick="saveGLBB('dipercepat')">Simpan eksperimen dipercepat</button>
+    </div>
+  </div>
+
+  <div id="panelDiperlambat" class="glbb-panel">
+    <div class="card">
+      <h3>GLBB Diperlambat — kecepatan berkurang</h3>
+      <div class="warning">Pada simulasi ini <b>a &lt; 0</b>. Jika kecepatan mencapai 0 m/s, andong berhenti. Amati perubahan jarak antartitik pada ticker timer.</div>
+      <div class="controls">
+        <div><label>Kecepatan awal v₀</label><input id="glbbLV0" type="number" value="2.0" min="0.5" max="3" step="0.1"><span class="small">m/s</span></div>
+        <div><label>Perlambatan |a|</label><input id="glbbLA" type="number" value="0.25" min="0.1" max="0.8" step="0.05"><span class="small">m/s²</span></div>
+        <div><label>Lintasan</label><input value="8 m" disabled></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>1. Jalankan virtual lab</h3>
+      <div class="simulator">
+        <div class="andong-stage" id="stageGLBBL">
+          <span class="tree" style="left:7%">🌳</span><span class="tree" style="left:82%">🌳</span>
+          <div class="marker" style="left:10%"><span>S0</span><small>0 m</small></div>
+          <div class="marker" style="left:30%"><span>S1</span><small>2 m</small></div>
+          <div class="marker" style="left:50%"><span>S2</span><small>4 m</small></div>
+          <div class="marker" style="left:70%"><span>S3</span><small>6 m</small></div>
+          <div class="marker" style="left:90%"><span>S4</span><small>8 m</small></div>
+          <div class="andong-runner" id="andongL">
+            <div class="horse">🐎</div><div class="carriage"></div><div class="roof"></div>
+            <div class="wheel w1"></div><div class="wheel w2"></div>
+          </div>
+        </div>
+        <div class="sim-readout" id="readGLBBL">GLBB DIPERLAMBAT | siap | t: 0.000 s | s: 0.00 m | v: 0.00 m/s</div>
+        <button class="btn green" onclick="startGLBB('diperlambat')">▶ Mulai</button>
+        <button class="btn secondary" onclick="pauseGLBB()">Ⅱ Jeda</button>
+        <button class="btn secondary" onclick="resetGLBB('diperlambat')">↺ Reset</button>
+        <button class="btn" onclick="recordGLBB('diperlambat')">📍 Catat pengukuran</button>
+      </div>
+    </div>
+
+    <div class="card ticker-card">
+      <h3>2. Ticker timer virtual</h3>
+      <p class="small">Bandingkan jarak antartitik dengan eksperimen dipercepat. Pada gerak diperlambat, titik-titik akan cenderung semakin rapat.</p>
+      <div class="ticker-strip" id="tickerL"><div class="strip-line"></div></div>
+      <div class="ticker-label">Gunakan pola titik sebagai bukti untuk menjelaskan perubahan kecepatan.</div>
+    </div>
+
+    <div class="card">
+      <h3>3. Isi tabel hasil pengukuranmu</h3>
+      <table>
+        <thead><tr><th>Posisi s (m)</th><th>Waktu t (s) — isi sendiri</th><th>Kecepatan v (m/s) — isi sendiri</th></tr></thead>
+        <tbody id="glbbLRows"></tbody>
+      </table>
+      <button class="btn" onclick="calcGLBBTable('diperlambat')">Tampilkan grafik</button>
+      <button class="btn secondary" onclick="clearGLBBTable('diperlambat')">Kosongkan tabel</button>
+    </div>
+
+    <div class="graph-grid">
+      <div class="card"><h3>Grafik posisi–waktu</h3><canvas id="graphGLBBL"></canvas></div>
+      <div class="card"><h3>Grafik kecepatan–waktu</h3><canvas id="graphVGLBBL"></canvas></div>
+      <div class="card"><h3>Grafik percepatan–waktu</h3><canvas id="graphAGLBBL"></canvas></div>
+    </div>
+
+    <div class="card">
+      <h3>4. Analisis GLBB diperlambat</h3>
+      <label>1. Bagaimana perubahan kecepatan dari S1 ke S4?</label><textarea id="glbbLA1"></textarea>
+      <label>2. Apa yang kamu lihat dari jarak titik pada ticker timer?</label><textarea id="glbbLA2"></textarea>
+      <label>3. Bagaimana bentuk grafik kecepatan–waktu dan apa maknanya?</label><textarea id="glbbLA3"></textarea>
+      <label>4. Kesimpulan eksperimen GLBB diperlambat</label><textarea id="glbbLConclusion"></textarea>
+      <button class="btn green" onclick="saveGLBB('diperlambat')">Simpan eksperimen diperlambat</button>
+    </div>
+  </div>
+</section>
+
+
+<section id="diskusi" class="page">
+  <div class="card">
+    <div class="step">
+      <div class="step-no">6</div>
+      <div style="flex:1">
+        <h2>Analisis & diskusi kelompok</h2>
+        <p>Gunakan data dari dua eksperimen. Jangan hanya menjawab “GLB” atau “GLBB”; jelaskan <b>bukti yang membuatmu sampai pada kesimpulan itu.</b></p>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Bandingkan bukti</h3>
+    <table>
+      <tr><th>Aspek</th><th>GLB</th><th>GLBB</th></tr>
+      <tr><td>Kecepatan</td><td><textarea id="cmpV1" placeholder="Berdasarkan data..."></textarea></td><td><textarea id="cmpV2" placeholder="Berdasarkan data..."></textarea></td></tr>
+      <tr><td>Percepatan</td><td><textarea id="cmpA1" placeholder="Berdasarkan data..."></textarea></td><td><textarea id="cmpA2" placeholder="Berdasarkan data..."></textarea></td></tr>
+      <tr><td>Bentuk grafik s–t</td><td><textarea id="cmpG1"></textarea></td><td><textarea id="cmpG2"></textarea></td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <h3>Pertanyaan diskusi</h3>
+    <label>1. Jika andong bergerak dengan kecepatan hampir tetap di jalan lurus, data apa yang perlu kamu kumpulkan untuk menguji dugaan tersebut?</label>
+    <textarea id="disc1"></textarea>
+    <label>2. Jika andong mulai bergerak dari keadaan diam lalu kecepatannya bertambah, mengapa keadaan itu lebih dekat dengan GLBB?</label>
+    <textarea id="disc2"></textarea>
+    <label>3. Apa keterbatasan simulasi dibandingkan gerak andong nyata?</label>
+    <textarea id="disc3"></textarea>
+    <label>4. Kesimpulan kelompok tentang perbedaan GLB dan GLBB</label>
+    <textarea id="disc4"></textarea>
+    <button class="btn green" onclick="saveFieldActivity('diskusi')">Simpan hasil diskusi</button>
+  </div>
+
+  <div class="card">
+    <h3>🤝 Evaluasi proses kolaborasi</h3>
+    <label class="checkline"><input type="checkbox" id="c1"> Kami membagi tugas dan menjalankan peran.</label>
+    <label class="checkline"><input type="checkbox" id="c2"> Semua anggota mendapat kesempatan menyampaikan pendapat.</label>
+    <label class="checkline"><input type="checkbox" id="c3"> Kami menggunakan data/grafik ketika berbeda pendapat.</label>
+    <label class="checkline"><input type="checkbox" id="c4"> Kami mendengarkan dan menghargai penjelasan anggota lain.</label>
+    <label class="checkline"><input type="checkbox" id="c5"> Kami mengevaluasi cara kerja kelompok sebelum menyimpulkan.</label>
+    <label>Hal yang perlu diperbaiki pada kerja kelompok kami:</label>
+    <textarea id="collabImprove"></textarea>
+    <button class="btn" onclick="saveFieldActivity('kolaborasi')">Simpan evaluasi kolaborasi</button>
+  </div>
+</section>
+
+<section id="evaluasi" class="page">
+  <div class="card">
+    <div class="step">
+      <div class="step-no">7</div>
+      <div style="flex:1">
+        <h2>Evaluasi pemahaman konsep</h2>
+        <p>Kerjakan secara individu. Pilih jawaban yang paling tepat, lalu gunakan alasanmu untuk menjelaskan hubungan dengan data eksperimen.</p>
+      </div>
+    </div>
+    <div id="quiz"></div>
+    <button class="btn green" onclick="checkQuiz()">Periksa jawaban</button>
+    <div id="quizResult" class="success hidden"></div>
+  </div>
+
+  <div class="card">
+    <h3>Jelaskan dengan kata-katamu sendiri</h3>
+    <label>Jika grafik posisi–waktu berbentuk garis lurus dengan kemiringan tetap, apa yang dapat kamu jelaskan tentang geraknya?</label>
+    <textarea id="evalExplain"></textarea>
+    <label>Jika grafik kecepatan–waktu menanjak secara lurus, apa makna kemiringan grafik tersebut?</label>
+    <textarea id="evalExplain2"></textarea>
+    <button class="btn" onclick="saveFieldActivity('evaluasi')">Simpan jawaban evaluasi</button>
+  </div>
+</section>
+
+<section id="refleksi" class="page">
+  <div class="card">
+    <div class="step">
+      <div class="step-no">8</div>
+      <div style="flex:1">
+        <h2>Refleksi & simpan hasil</h2>
+        <p>Di tahap akhir, pikirkan kembali apa yang kamu temukan, bagaimana kelompokmu bekerja, dan bagaimana konteks andong membantu memahami fisika.</p>
+      </div>
+    </div>
+    <label>Konsep apa yang sekarang paling kamu pahami? Jelaskan buktinya.</label>
+    <textarea id="r1"></textarea>
+    <label>Bagian eksperimen mana yang paling membantumu memahami GLB/GLBB?</label>
+    <textarea id="r2"></textarea>
+    <label>Apa kontribusi pribadimu dalam kelompok?</label>
+    <textarea id="r3"></textarea>
+    <label>Apa yang dilakukan kelompokmu ketika ada perbedaan pendapat?</label>
+    <textarea id="r4"></textarea>
+    <label>Bagaimana konteks andong membuat konsep gerak terasa lebih dekat dengan kehidupanmu?</label>
+    <textarea id="r5"></textarea>
+    <button class="btn" onclick="saveFieldActivity('refleksi')">Simpan refleksi</button>
+  </div>
+
+  <div class="card">
+    <h2>💾 Kirim hasil kepada guru</h2>
+    <p>Setelah semua kegiatan selesai, klik tombol berikut. Web akan membuat <b>file hasil belajar (.json)</b> yang berisi identitas kelompok, data eksperimen, tabel, jawaban, grafik yang dapat dibuat ulang, kuis, refleksi, dan bukti kolaborasi.</p>
+    <div class="success"><b>Alur pengumpulan:</b> Murid → klik “Simpan & Unduh Hasil” → kirim file kepada guru → guru membuka menu <b>Guru</b> → unggah file → hasil dapat diperiksa.</div>
+    <button class="btn green" onclick="downloadResults()">⬇ Simpan & Unduh Hasil untuk Guru</button>
+    <button class="btn secondary" onclick="saveBrowser()">💾 Simpan sementara di perangkat</button>
+    <div id="saveStatus" class="small"></div>
+  </div>
+</section>
+
+<section id="guru" class="page">
+  <div class="card teacher-box">
+    <h2>👩‍🏫 Pemeriksaan Guru</h2>
+    <p>Bagian ini untuk guru. Murid cukup mengirim file hasil <b>.json</b> dari halaman Refleksi. Guru dapat membuka file tersebut di web ini dan memeriksa seluruh jawaban serta data eksperimen.</p>
+    <input type="file" id="teacherFile" accept=".json,application/json">
+    <button class="btn" onclick="loadTeacherFile()">Buka hasil murid</button>
+    <div id="teacherStatus" class="small"></div>
+  </div>
+
+  <div id="teacherResult" class="hidden">
+    <div class="card">
+      <h2>Identitas hasil</h2>
+      <div id="teacherIdentity"></div>
+    </div>
+    <div class="card">
+      <h2>Ringkasan pemeriksaan</h2>
+      <div class="grid" id="teacherKPI"></div>
+      <label>Catatan guru</label>
+      <textarea id="teacherNote" placeholder="Tulis umpan balik untuk murid..."></textarea>
+      <button class="btn green" onclick="downloadTeacherFeedback()">Simpan umpan balik guru</button>
+    </div>
+    <div class="card">
+      <h2>Data Eksperimen GLB</h2>
+      <div id="teacherGLB"></div>
+      <canvas id="teacherGraphGLB"></canvas>
+    </div>
+    <div class="card">
+      <h2>Data Eksperimen GLBB</h2><div class="teacher-note">Guru dapat membandingkan dua kondisi GLBB: dipercepat dan diperlambat. Data tetap berasal dari isian murid, bukan hasil yang otomatis diisikan ke tabel.</div>
+      <div id="teacherGLBB"></div>
+      <canvas id="teacherGraphGLBB"></canvas>
+    </div>
+    <div class="card">
+      <h2>Jawaban & proses belajar</h2>
+      <div id="teacherAnswers"></div>
+    </div>
+  </div>
+</section>
+
+<div class="card">
+  <h3>📈 Kemajuan belajar</h3>
+  <div class="progress-wrap"><div id="progressBar" class="progress-bar"></div></div>
+  <p id="progressText">0 dari 7 tahap selesai</p>
+  <p class="small">Tahap utama: tujuan → kelompok → GLB → GLBB → analisis → evaluasi → refleksi. Pada GLBB, pilih dipercepat atau diperlambat.</p>
+</div>
+
+</main>
+
+<footer>
+  AndongFiz • Belajar fisika melalui konteks budaya, eksperimen virtual, data, grafik, dan kerja sama.
+</footer>
+
+<script>
+const POS=[0,2,4,6,8];
+const state={
+  glb:{times:Array(5).fill(""),vel:Array(5).fill(""),notes:{}},
+  glbbD:{times:Array(5).fill(""),vel:Array(5).fill(""),notes:{}},
+  glbbL:{times:Array(5).fill(""),vel:Array(5).fill(""),notes:{}},
+  completed:{}
+};
+let sims={
+  glb:{running:false,t:0,last:0},
+  glbbD:{running:false,t:0,last:0},
+  glbbL:{running:false,t:0,last:0}
+};
+let activeGLBB='dipercepat';
+let teacherData=null;
+
+const fields=[
+  'predGLB','predGLBB','groupName','members','collabPlan',
+  'glbA1','glbA2','glbA3','glbConclusion',
+  'glbbDA1','glbbDA2','glbbDA3','glbbDConclusion',
+  'glbbLA1','glbbLA2','glbbLA3','glbbLConclusion',
+  'cmpV1','cmpV2','cmpA1','cmpA2','cmpG1','cmpG2',
+  'disc1','disc2','disc3','disc4','collabImprove',
+  'evalExplain','evalExplain2','r1','r2','r3','r4','r5'
+];
+
+function $(id){return document.getElementById(id)}
+function go(id){
+  document.querySelectorAll('.page').forEach(p=>p.classList.toggle('active',p.id===id));
+  document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('active',b.dataset.page===id));
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>go(b.dataset.page));
+
+function buildRows(){
+  const make=(id,mode)=>{
+    $(id).innerHTML=POS.map((p,i)=>`<tr>
+      <td><b>${p.toFixed(0)}</b></td>
+      <td><input class="data-input" type="number" min="0" step="0.001" id="${mode}t${i}" placeholder="isi"></td>
+      <td><input class="data-input" type="number" min="0" step="0.001" id="${mode}v${i}" placeholder="isi"></td>
+    </tr>`).join('');
+  };
+  make('glbRows','glb');
+  make('glbbDRows','glbbD');
+  make('glbbLRows','glbbL');
+}
+buildRows();
+
+function startSim(mode){
+  const s=sims[mode]; if(!s)return; s.running=true; s.last=performance.now();
+  requestAnimationFrame(()=>loopSim(mode));
+}
+function pauseSim(mode){sims[mode].running=false}
+function resetSim(mode){
+  sims[mode].running=false;sims[mode].t=0;
+  if(mode==='glb'){
+    const cart=$('andongGLB');
+    if(cart)cart.style.left='6%';
+    updateRead('glb',0,0,null);
+  }
+}
+function loopSim(mode){
+  const s=sims[mode]; if(!s.running)return;
+  const now=performance.now(),dt=Math.min(.04,(now-s.last)/1000); s.last=now;s.t+=dt;
+  const vel=Math.max(.2,Number($('glbSpeed').value)||1),pos=Math.min(8,vel*s.t);
+  const cart=$('andongGLB');
+  if(cart)cart.style.left=(6+(pos/8)*84)+'%';
+  updateRead(mode,s.t,pos,null);
+  if(pos>=8)s.running=false; else requestAnimationFrame(()=>loopSim(mode));
+}
+function updateRead(mode,t,pos,v){
+  if(mode==='glb') $('readGLB').textContent=`SIMULASI GLB | status: ${sims.glb.running?'berjalan':'jeda/siap'} | waktu: ${t.toFixed(3)} s | posisi: ${pos.toFixed(2)} m`;
+}
+function openGLBBTab(kind,btn){
+  activeGLBB=kind;
+  document.querySelectorAll('.glbb-tab').forEach(x=>x.classList.remove('active'));
+  btn.classList.add('active');
+  $('panelDipercepat').classList.toggle('active',kind==='dipercepat');
+  $('panelDiperlambat').classList.toggle('active',kind==='diperlambat');
+}
+function getGLBBConfig(kind){
+  if(kind==='dipercepat'){
+    return {mode:'glbbD',v0:Number($('glbbDV0').value)||0.5,a:Number($('glbbDA').value)||0.5,stage:'stageGLBBD',cart:'andongD',read:'readGLBBD',ticker:'tickerD'};
+  }
+  return {mode:'glbbL',v0:Number($('glbbLV0').value)||2,a:-(Number($('glbbLA').value)||0.25),stage:'stageGLBBL',cart:'andongL',read:'readGLBBL',ticker:'tickerL'};
+}
+function startGLBB(kind){
+  const c=getGLBBConfig(kind),s=sims[c.mode];s.running=true;s.last=performance.now();
+  updateTicker(kind,0);
+  requestAnimationFrame(()=>loopGLBB(kind));
+}
+function pauseGLBB(){Object.values(sims).forEach(s=>s.running=false)}
+function resetGLBB(kind){
+  const c=getGLBBConfig(kind),s=sims[c.mode];s.running=false;s.t=0;
+  $(c.cart).style.left='6%';updateGLBBRead(kind,0,0,c.v0);updateTicker(kind,0);
+}
+function loopGLBB(kind){
+  const c=getGLBBConfig(kind),s=sims[c.mode];if(!s.running)return;
+  const now=performance.now(),dt=Math.min(.04,(now-s.last)/1000);s.last=now;s.t+=dt;
+  let v=c.v0+c.a*s.t;
+  if(v<0){v=0;s.running=false}
+  let pos=c.v0*s.t+0.5*c.a*s.t*s.t;
+  pos=Math.max(0,Math.min(8,pos));
+  $(c.cart).style.left=(6+(pos/8)*84)+'%';
+  updateGLBBRead(kind,s.t,pos,v);updateTicker(kind,s.t);
+  if(pos>=8)s.running=false;
+  if(s.running)requestAnimationFrame(()=>loopGLBB(kind));
+}
+function updateGLBBRead(kind,t,pos,v){
+  const c=getGLBBConfig(kind),label=kind==='dipercepat'?'GLBB DIPERCEPAT':'GLBB DIPERLAMBAT';
+  $(''+c.read).textContent=`${label} | status: ${sims[c.mode].running?'berjalan':'jeda/siap'} | t: ${t.toFixed(3)} s | s: ${pos.toFixed(2)} m | v: ${v.toFixed(2)} m/s`;
+}
+function updateTicker(kind,t){
+  const id=kind==='dipercepat'?'tickerD':'tickerL',box=$(id); if(!box)return;
+  const dots=Array.from(box.querySelectorAll('.ticker-dot'));dots.forEach(d=>d.remove());
+  const c=getGLBBConfig(kind),interval=.25,maxT=kind==='dipercepat'?5:8;
+  for(let i=0;i<=Math.min(18,Math.floor(t/interval));i++){
+    const tt=i*interval;
+    const p=kind==='dipercepat' ? c.v0*tt+0.5*c.a*tt*tt : Math.max(0,c.v0*tt+0.5*c.a*tt*tt);
+    const pct=Math.min(95,5+(p/8)*90);
+    const d=document.createElement('div');d.className='ticker-dot';d.style.left=pct+'%';box.appendChild(d);
+  }
+}
+function recordGLBB(kind){
+  const c=getGLBBConfig(kind),s=sims[c.mode];
+  if(s.t<=0){alert('Jalankan simulasi terlebih dahulu.');return}
+  let pos=c.v0*s.t+0.5*c.a*s.t*s.t;pos=Math.max(0,Math.min(8,pos));
+  const nearest=Math.min(...POS.map(x=>Math.abs(x-pos))),idx=POS.indexOf(nearest);
+  if(idx===0){alert('Titik 0 m adalah titik awal. Gunakan S1–S4.');return}
+  const v=Math.max(0,c.v0+c.a*s.t);
+  $(`${c.mode}t${idx}`).value=s.t.toFixed(3);
+  $(`${c.mode}v${idx}`).value=v.toFixed(3);
+  alert(`Pengukuran dicatat pada posisi ${nearest} m.`);
+}
+function calcGLBBTable(kind){
+  const mode=kind==='dipercepat'?'glbbD':'glbbL';
+  for(let i=0;i<5;i++){state[mode].times[i]=Number($(`${mode}t${i}`).value);state[mode].vel[i]=Number($(`${mode}v${i}`).value)}
+  if(state[mode].times.slice(1).some(x=>!Number.isFinite(x))||state[mode].vel.slice(1).some(x=>!Number.isFinite(x))){
+    alert('Isi waktu dan kecepatan pada S1–S4 terlebih dahulu.');return;
+  }
+  const suffix=kind==='dipercepat'?'D':'L';
+  drawGraph(mode,'position',$(`graphGLBB${suffix}`));
+  drawGraph(mode,'velocity',$(`graphVGLBB${suffix}`));
+  drawAccelerationGraph(mode,$(`graphAGLBB${suffix}`));
+  state.completed[mode]=true;updateProgress();
+}
+function clearGLBBTable(kind){
+  const mode=kind==='dipercepat'?'glbbD':'glbbL';
+  for(let i=0;i<5;i++){$(`${mode}t${i}`).value='';$(`${mode}v${i}`).value=''}
+  state[mode].times=Array(5).fill("");state[mode].vel=Array(5).fill("");
+  const suffix=kind==='dipercepat'?'D':'L';
+  clearCanvas($(`graphGLBB${suffix}`));clearCanvas($(`graphVGLBB${suffix}`));clearCanvas($(`graphAGLBB${suffix}`));
+}
+function saveGLBB(kind){
+  calcGLBBTable(kind);
+  const ids=kind==='dipercepat'?['glbbDA1','glbbDA2','glbbDA3','glbbDConclusion']:['glbbLA1','glbbLA2','glbbLA3','glbbLConclusion'];
+  const mode=kind==='dipercepat'?'glbbD':'glbbL';state[mode].notes={};ids.forEach(id=>state[mode].notes[id]=$(id).value);
+  state.completed[mode]=true;state.completed.glbb=(state.completed.glbbD||state.completed.glbbL);updateProgress();saveBrowser(false);
+  alert(`Eksperimen GLBB ${kind} tersimpan.`);
+}
+function clearCanvas(c){const ctx=c.getContext('2d');ctx.clearRect(0,0,c.width,c.height)}
+function drawGraph(mode,type,canvasOverride){
+  const canvas=canvasOverride || $(mode==='glb'?(type==='position'?'graphGLB':'graphVGLB'):'graphGLBB');
+  const xs=state[mode].times.slice(1).map(Number);
+  const ys=(type==='position'?POS.slice(1):state[mode].vel.slice(1)).map(Number);
+  drawLine(canvas,xs,ys,'Waktu (s)',type==='position'?'Posisi (m)':'Kecepatan (m/s)');
+}
+function drawAccelerationGraph(mode,canvas){
+  const xs=state[mode].times.slice(1).map(Number);
+  if(xs.length<2){clearCanvas(canvas);return}
+  const vs=state[mode].vel.slice(1).map(Number),acc=[];
+  for(let i=0;i<vs.length;i++){
+    if(i===0) acc.push((vs[1]-vs[0])/((xs[1]-xs[0])||1));
+    else acc.push((vs[i]-vs[i-1])/((xs[i]-xs[i-1])||1));
+  }
+  drawLine(canvas,xs,acc,'Waktu (s)','Percepatan (m/s²)');
+}
+function calcTable(mode){
+  if(mode!=='glb') return;
+  for(let i=0;i<5;i++){
+    const tEl=$(`glbt${i}`),vEl=$(`glbv${i}`);
+    const t=tEl ? Number(tEl.value) : NaN;
+    let v=vEl && vEl.value!=='' ? Number(vEl.value) : NaN;
+    state.glb.times[i]=tEl && tEl.value!=='' ? t : '';
+    if(i===0){
+      state.glb.vel[i]=vEl && vEl.value!=='' ? v : 0;
+      if(vEl && vEl.value==='') vEl.value='0';
+    }else{
+      if(!Number.isFinite(t)){
+        alert('Isi waktu pada S1–S4 terlebih dahulu.');
+        return;
+      }
+      if(!Number.isFinite(v) || vEl.value===''){
+        v=POS[i]/t;
+        if(!Number.isFinite(v)){
+          alert('Waktu tidak boleh 0. Periksa data pada tabel.');
+          return;
+        }
+        vEl.value=v.toFixed(3);
+      }
+      state.glb.vel[i]=v;
+    }
+  }
+  drawGraph('glb','position',$('graphGLB'));
+  drawGraph('glb','velocity',$('graphVGLB'));
+  state.completed.glb=true;
+  updateProgress();
+}
+
+function clearTable(mode){
+  if(mode!=='glb') return;
+  for(let i=0;i<5;i++){
+    const tEl=$(`glbt${i}`),vEl=$(`glbv${i}`);
+    if(tEl)tEl.value='';
+    if(vEl)vEl.value='';
+  }
+  state.glb.times=Array(5).fill('');
+  state.glb.vel=Array(5).fill('');
+  clearCanvas($('graphGLB'));
+  clearCanvas($('graphVGLB'));
+  state.completed.glb=false;
+  updateProgress();
+}
+
+function drawLine(canvas,xs,ys,xLabel,yLabel){
+  if(!canvas)return;
+  const clean=[];
+  for(let i=0;i<Math.min(xs.length,ys.length);i++){
+    const x=Number(xs[i]),y=Number(ys[i]);
+    if(Number.isFinite(x)&&Number.isFinite(y))clean.push([x,y]);
+  }
+  const dpr=window.devicePixelRatio||1;
+  const rect=canvas.getBoundingClientRect();
+  const width=Math.max(360,Math.round(rect.width||520));
+  const height=300;
+  canvas.width=width*dpr;
+  canvas.height=height*dpr;
+  canvas.style.height=height+'px';
+  const ctx=canvas.getContext('2d');
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+  ctx.clearRect(0,0,width,height);
+  ctx.font='12px Arial';
+  ctx.fillStyle='#334155';
+  ctx.strokeStyle='#cbd5e1';
+  ctx.lineWidth=1;
+  const pad={left:58,right:20,top:22,bottom:48};
+  const pw=width-pad.left-pad.right, ph=height-pad.top-pad.bottom;
+  const xVals=clean.map(p=>p[0]), yVals=clean.map(p=>p[1]);
+  let xmin=xVals.length?Math.min(...xVals):0, xmax=xVals.length?Math.max(...xVals):1;
+  let ymin=yVals.length?Math.min(...yVals):0, ymax=yVals.length?Math.max(...yVals):1;
+  if(xmin===xmax){xmin-=1;xmax+=1}
+  if(ymin===ymax){ymin-=1;ymax+=1}
+  const yPad=(ymax-ymin)*0.1 || 1;
+  ymin=Math.min(0,ymin-yPad); ymax=ymax+yPad;
+  const mapX=x=>pad.left+(x-xmin)/(xmax-xmin)*pw;
+  const mapY=y=>pad.top+ph-(y-ymin)/(ymax-ymin)*ph;
+  ctx.beginPath();
+  ctx.moveTo(pad.left,pad.top);ctx.lineTo(pad.left,pad.top+ph);ctx.lineTo(pad.left+pw,pad.top+ph);ctx.stroke();
+  const ticks=5;
+  ctx.fillStyle='#475569';
+  ctx.textAlign='center';
+  for(let i=0;i<=ticks;i++){
+    const x=pad.left+i/ticks*pw;
+    const val=xmin+i/ticks*(xmax-xmin);
+    ctx.strokeStyle='#e2e8f0';ctx.beginPath();ctx.moveTo(x,pad.top);ctx.lineTo(x,pad.top+ph);ctx.stroke();
+    ctx.fillText(val.toFixed(1),x,pad.top+ph+18);
+  }
+  ctx.textAlign='right';
+  for(let i=0;i<=ticks;i++){
+    const y=pad.top+ph-i/ticks*ph;
+    const val=ymin+i/ticks*(ymax-ymin);
+    ctx.strokeStyle='#e2e8f0';ctx.beginPath();ctx.moveTo(pad.left,y);ctx.lineTo(pad.left+pw,y);ctx.stroke();
+    ctx.fillText(val.toFixed(1),pad.left-8,y+4);
+  }
+  ctx.fillStyle='#1e3a5f';ctx.font='bold 13px Arial';
+  ctx.textAlign='center';ctx.fillText(xLabel,pad.left+pw/2,height-8);
+  ctx.save();ctx.translate(15,pad.top+ph/2);ctx.rotate(-Math.PI/2);ctx.fillText(yLabel,0,0);ctx.restore();
+  if(clean.length===0){
+    ctx.fillStyle='#64748b';ctx.textAlign='center';ctx.font='14px Arial';
+    ctx.fillText('Isi data tabel terlebih dahulu.',width/2,height/2);
+    return;
+  }
+  ctx.strokeStyle='#2563eb';ctx.lineWidth=2.5;ctx.beginPath();
+  clean.forEach((p,i)=>{const x=mapX(p[0]),y=mapY(p[1]);if(i===0)ctx.moveTo(x,y);else ctx.lineTo(x,y)});ctx.stroke();
+  ctx.fillStyle='#2563eb';
+  clean.forEach(p=>{ctx.beginPath();ctx.arc(mapX(p[0]),mapY(p[1]),4,0,Math.PI*2);ctx.fill()});
+}
+
+function saveLab(mode){
+  calcTable(mode);
+  const ids=['glbA1','glbA2','glbA3','glbConclusion'];
+  state.glb.notes={};ids.forEach(id=>state.glb.notes[id]=$(id).value);
+  state.completed.glb=true;updateProgress();saveBrowser(false);
+  alert('Eksperimen GLB tersimpan.');
+}
+function saveFieldActivity(id){
+  state.completed[id]=true;updateProgress();
+  saveBrowser(false);
+  alert('Aktivitas tersimpan pada perangkat. Jangan lupa unduh hasil akhir untuk dikirim kepada guru.');
+}
+function updateProgress(){
+  const ids=['tujuan','kelompok','glb','glbbD','diskusi','evaluasi','refleksi'];
+  const n=ids.filter(x=>state.completed[x]).length;
+  $('progressBar').style.width=(n/ids.length*100)+'%';
+  $('progressText').textContent=`${n} dari ${ids.length} tahap selesai`;
+}
+
+function gather(){
+  const out={version:'AndongFiz-Student-2.0',savedAt:new Date().toISOString(),fields:{},checks:{},quiz:window.quizState||{},labs:{
+    glb:{times:state.glb.times,vel:state.glb.vel,notes:state.glb.notes},
+    glbbD:{times:state.glbbD.times,vel:state.glbbD.vel,notes:state.glbbD.notes},
+    glbbL:{times:state.glbbL.times,vel:state.glbbL.vel,notes:state.glbbL.notes}
+  },completed:state.completed};
+  fields.forEach(id=>{if($(id))out.fields[id]=$(id).value});
+  ['c1','c2','c3','c4','c5'].forEach(id=>{if($(id))out.checks[id]=$(id).checked});
+  out.fields.glbSpeed=$('glbSpeed').value;
+  out.fields.glbbDV0=$('glbbDV0').value;out.fields.glbbDA=$('glbbDA').value;
+  out.fields.glbbLV0=$('glbbLV0').value;out.fields.glbbLA=$('glbbLA').value;
+  return out;
+}
+function applyGather(data){
+  teacherData=data;
+  const f=data.fields||{};
+  Object.keys(f).forEach(id=>{if($(id))$(id).value=f[id]});
+  if(data.labs?.glb){state.glb.times=data.labs.glb.times||state.glb.times;state.glb.vel=data.labs.glb.vel||state.glb.vel}
+  if(data.labs?.glbbD){state.glbbD.times=data.labs.glbbD.times||state.glbbD.times;state.glbbD.vel=data.labs.glbbD.vel||state.glbbD.vel}
+  if(data.labs?.glbbL){state.glbbL.times=data.labs.glbbL.times||state.glbbL.times;state.glbbL.vel=data.labs.glbbL.vel||state.glbbL.vel}
+  state.completed=data.completed||state.completed;
+}
+function saveBrowser(show=true){
+  localStorage.setItem('andongfizDraft',JSON.stringify(gather()));
+  if(show) $('saveStatus').textContent='✓ Data sementara tersimpan di browser ini.';
+}
+function restoreBrowser(){
+  const raw=localStorage.getItem('andongfizDraft');if(!raw)return;
+  try{applyGather(JSON.parse(raw));syncTables();}catch(e){}
+}
+function syncTables(){
+  [['glb',state.glb],['glbbD',state.glbbD],['glbbL',state.glbbL]].forEach(([mode,lab])=>{
+    for(let i=0;i<5;i++){$(`${mode}t${i}`).value=lab.times[i]||'';$(`${mode}v${i}`).value=lab.vel[i]||''}
+  });
+  updateProgress();
+}
+function downloadResults(){
+  const data=gather();
+  const name=(data.fields.groupName||'murid').replace(/[^a-z0-9_-]+/gi,'_');
+  const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`AndongFiz_${name}_${new Date().toISOString().slice(0,10)}.json`;a.click();URL.revokeObjectURL(a.href);
+  $('saveStatus').textContent='✓ File hasil berhasil dibuat. Kirim file .json tersebut kepada guru.';
+}
+
+function loadTeacherFile(){
+  const file=$('teacherFile').files[0];if(!file){alert('Pilih file hasil murid terlebih dahulu.');return}
+  const r=new FileReader();
+  r.onload=()=>{try{const data=JSON.parse(r.result);renderTeacher(data);$('teacherStatus').textContent='✓ Hasil murid berhasil dibuka.'}catch(e){alert('File tidak dapat dibaca. Pastikan file berasal dari AndongFiz.')}};
+  r.readAsText(file);
+}
+function renderTeacher(data){
+  teacherData=data;
+  const f=data.fields||{},glb=data.labs?.glb||{},glbbD=data.labs?.glbbD||{},glbbL=data.labs?.glbbL||{};
+  $('teacherResult').classList.remove('hidden');
+  $('teacherIdentity').innerHTML=`<p><b>Kelompok:</b> ${esc(f.groupName||'-')}</p><p><b>Anggota & peran:</b><br>${nl2br(f.members||'-')}</p><p><b>Waktu penyimpanan:</b> ${esc(data.savedAt||'-')}</p>`;
+  const q=data.quiz||{},qScore=q.score==null?'-':`${q.score}/${q.total||5}`;
+  const count=x=>(x.times||[]).filter((v,i)=>i>0&&v!=='').length;
+  $('teacherKPI').innerHTML=`
+    <div class="info"><div class="small">Kuis konsep</div><div class="kpi">${qScore}</div></div>
+    <div class="info"><div class="small">GLB terisi</div><div class="kpi">${count(glb)}/4</div></div>
+    <div class="info"><div class="small">GLBB dipercepat</div><div class="kpi">${count(glbbD)}/4</div></div>
+    <div class="info"><div class="small">GLBB diperlambat</div><div class="kpi">${count(glbbL)}/4</div></div>`;
+  $('teacherGLB').innerHTML=renderTable(glb,'GLB');
+  $('teacherGLBB').innerHTML=renderTable(glbbD,'GLBB Dipercepat') + '<hr>' + renderTable(glbbL,'GLBB Diperlambat');
+  drawTeacherGraph('teacherGraphGLB',glb,'GLB');
+  drawTeacherGraph('teacherGraphGLBB',glbbD,'GLBB Dipercepat');
+  $('teacherAnswers').innerHTML=renderAnswers(f,data);
+}
+function renderTable(lab,title){
+  const times=lab.times||[],vel=lab.vel||[];
+  return `<table><tr><th>Posisi (m)</th><th>Waktu (s)</th><th>Kecepatan (m/s)</th></tr>${POS.map((p,i)=>`<tr><td>${p}</td><td>${times[i]??''}</td><td>${vel[i]??''}</td></tr>`).join('')}</table>
+  <p><b>Analisis siswa:</b><br>${nl2br(Object.values(lab.notes||{}).join('\\n\\n')||'-')}</p>`;
+}
+function drawTeacherGraph(id,lab,title){
+  const canvas=$(id),times=(lab.times||[]).slice(1).map(Number),pos=POS.slice(1);
+  if(times.some(x=>!Number.isFinite(x))){clearCanvas(canvas);return}
+  drawLine(canvas,times,pos,'Waktu (s)',`Posisi (m) — ${title}`);
+}
+function renderAnswers(f,data){
+  const ids=[
+    ['Prediksi GLB','predGLB'],['Prediksi GLBB','predGLBB'],['Rencana kolaborasi','collabPlan'],
+    ['Analisis GLB 1','glbA1'],['Analisis GLB 2','glbA2'],['Analisis GLB 3','glbA3'],['Kesimpulan GLB','glbConclusion'],
+    ['GLBB dipercepat 1','glbbDA1'],['GLBB dipercepat 2','glbbDA2'],['GLBB dipercepat 3','glbbDA3'],['Kesimpulan GLBB dipercepat','glbbDConclusion'],
+    ['GLBB diperlambat 1','glbbLA1'],['GLBB diperlambat 2','glbbLA2'],['GLBB diperlambat 3','glbbLA3'],['Kesimpulan GLBB diperlambat','glbbLConclusion'],
+    ['Kesimpulan perbandingan','disc4'],['Evaluasi kolaborasi','collabImprove'],['Penjelasan evaluasi 1','evalExplain'],['Penjelasan evaluasi 2','evalExplain2'],
+    ['Refleksi konsep','r1'],['Refleksi eksperimen','r2'],['Refleksi kontribusi','r3'],['Refleksi penyelesaian perbedaan','r4'],['Refleksi CRT','r5']
+  ];
+  return ids.map(x=>`<div class="answer"><b>${x[0]}</b><br>${nl2br(f[x[1]]||'-')}</div>`).join('<br>');
+}
+function nl2br(s){return esc(String(s)).replace(/\n/g,'<br>')}
+function esc(s){return String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
+
+function downloadTeacherFeedback(){
+  if(!teacherData){alert('Buka hasil murid terlebih dahulu.');return}
+  const feedback={
+    studentFileVersion:teacherData.version,
+    group:teacherData.fields?.groupName||'',
+    teacherNote:$('teacherNote').value,
+    reviewedAt:new Date().toISOString()
+  };
+  const blob=new Blob([JSON.stringify(feedback,null,2)],{type:'application/json'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`UmpanBalik_Guru_${(feedback.group||'murid').replace(/[^a-z0-9_-]+/gi,'_')}.json`;a.click();URL.revokeObjectURL(a.href);
+}
+
+const quiz=[
+  ['Jarak bertambah 2 m setiap 1 s dan kecepatan tetap. Geraknya paling tepat disebut...', ['GLB','GLBB','Gerak melingkar','Tidak bergerak'],0],
+  ['Kecepatan suatu benda berubah dari 1 m/s menjadi 2 m/s, lalu 3 m/s pada selang waktu yang sama. Data tersebut menunjukkan...', ['Kecepatan tetap','Perubahan kecepatan teratur','Percepatan selalu nol','Benda diam'],1],
+  ['Jika v₀ = 2 m/s, a = 1 m/s², dan t = 4 s, maka vₜ = ...', ['2 m/s','4 m/s','6 m/s','8 m/s'],2],
+  ['Grafik posisi terhadap waktu untuk GLB ideal berupa...', ['Garis lurus dengan kemiringan tetap','Parabola','Lingkaran','Garis acak'],0],
+  ['Kemiringan grafik kecepatan terhadap waktu pada GLBB menunjukkan...', ['Jarak','Percepatan','Posisi','Waktu'],1]
+];
+window.quizState={answers:Array(quiz.length).fill(null),score:null,total:quiz.length};
+function buildQuiz(){
+  const box=$('quiz');
+  quiz.forEach((q,i)=>{
+    const div=document.createElement('div');div.className='card';
+    div.innerHTML=`<b>${i+1}. ${q[0]}</b>`;
+    q[1].forEach((op,j)=>{
+      const b=document.createElement('button');b.className='btn secondary';b.style.display='block';b.style.width='100%';b.style.textAlign='left';b.textContent=String.fromCharCode(65+j)+'. '+op;
+      b.onclick=()=>{window.quizState.answers[i]=j;div.querySelectorAll('button').forEach(x=>x.style.background='#eaf1f6');b.style.background='#ffe0a0'};
+      div.appendChild(b);
+    });
+    box.appendChild(div);
+  });
+}
+buildQuiz();
+function checkQuiz(){
+  let score=0;
+  quiz.forEach((q,i)=>{if(window.quizState.answers[i]===q[2])score++});
+  window.quizState.score=score;
+  $('quizResult').classList.remove('hidden');
+  $('quizResult').innerHTML=`<div class="score">Skor: ${score}/${quiz.length}</div><p>${score>=4?'Gunakan data eksperimenmu untuk memperkuat alasan, bukan hanya menghafal ciri GLB/GLBB.':'Coba periksa kembali ciri kecepatan, percepatan, dan bentuk grafik.'}</p>`;
+  state.completed.evaluasi=true;updateProgress();
+}
+
+window.addEventListener('resize',()=>{if(state.completed.glb){drawGraph('glb','position');drawGraph('glb','velocity')}if(state.completed.glbbD){drawGraph('glbbD','position',$('graphGLBBD'));drawGraph('glbbD','velocity',$('graphVGLBBD'));drawAccelerationGraph('glbbD',$('graphAGLBBD'))}
+  if(state.completed.glbbL){drawGraph('glbbL','position',$('graphGLBBL'));drawGraph('glbbL','velocity',$('graphVGLBBL'));drawAccelerationGraph('glbbL',$('graphAGLBBL'))}});
+
+restoreBrowser();
+<!-- GLB movement fix: unique runner id and corrected animation target -->
+</script>
+</body>
+</html>
